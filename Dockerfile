@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM FROM --platform=$BUILDPLATFORM ghcr.io/linuxserver/baseimage-alpine:3.23
+FROM ghcr.io/linuxserver/baseimage-alpine:arm64v8-3.23
+
 
 # set version label
 ARG BUILD_DATE
