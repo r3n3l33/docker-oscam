@@ -83,7 +83,7 @@ RUN \
   rm -rf \
     /tmp/*
 
-# copy local files
+# copy local files 
 COPY root/ /
 
 # Ports and volumes
