@@ -87,7 +87,7 @@ RUN \
 # copy local files
 COPY root/ /
 
-# Ports and volumes
+# Ports and volumes 
 EXPOSE 8888
 
 VOLUME /config
