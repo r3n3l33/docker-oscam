@@ -42,13 +42,13 @@ RUN \
   cd /tmp/oscam && \
   ./config.sh \
     --enable all \
+    --enable IPV6SUPPORT \
     --disable \
     CARDREADER_DB2COM \
     CARDREADER_INTERNAL \
     CARDREADER_STINGER \
     CARDREADER_STAPI \
     CARDREADER_STAPI5 \
-    IPV6SUPPORT \
     LCDSUPPORT \
     LEDSUPPORT \
     READ_SDT_CHARSETS \
