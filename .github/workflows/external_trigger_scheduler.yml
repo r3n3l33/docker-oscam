@@ -2,7 +2,7 @@ name: External Trigger Scheduler
 
 on:
   schedule:
-    - cron:  '17 * * * *'
+    - cron: '17 3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -18,15 +18,21 @@ jobs:
 
       - name: External Trigger Scheduler
         run: |
+          # Prüfe, ob heute der 3. Tag ist (Tag des Jahres modulo 3)
+          if [ $(( $(date +\%j) \% 3 )) -ne 0 ] && [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "Überspringe Ausführung (läuft nur alle 3 Tage)." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
           printf "# External trigger scheduler for docker-oscam\n\n" >> $GITHUB_STEP_SUMMARY
-          printf "Found the branches:\n\n%s\n" "$(git for-each-ref --format='- %(refname:lstrip=3)' refs/remotes)" >> $GITHUB_STEP_SUMMARY
+          printf "Found the branches:\n\n%s\n" "$(git for-each-ref --format='- \%(refname:lstrip=3)' refs/remotes)" >> $GITHUB_STEP_SUMMARY
           for br in $(git for-each-ref --format='%(refname:lstrip=3)' refs/remotes)
           do
             if [[ "${br}" == "HEAD" ]]; then
-              printf "\nSkipping %s.\n" ${br} >> $GITHUB_STEP_SUMMARY
+              printf "\nSkipping %s.\n" ${br} >>$GITHUB_STEP_SUMMARY
               continue
             fi
-            printf "\n## Evaluating \`%s\`\n\n" ${br} >> $GITHUB_STEP_SUMMARY
+            printf "\n## Evaluating \`%s\`\n\n" ${br} >>$GITHUB_STEP_SUMMARY
             ls_jenkins_vars=$(curl -sX GET https://raw.githubusercontent.com/linuxserver/docker-oscam/${br}/jenkins-vars.yml)
             ls_branch=$(echo "${ls_jenkins_vars}" | yq -r '.ls_branch')
             ls_trigger=$(echo "${ls_jenkins_vars}" | yq -r '.external_type')
